@@ -33,6 +33,14 @@ namespace CarGame
         //Player
         private int playerWidth = 55;
         private int playerHeight = 95;
+        private int playerX = 0;
+        private int playerY = 0;
+
+        // Lane System
+        private int[] lanes;
+        private int currentLane;
+        private int targetLane;
+        private int laneSpeed = 8;
 
 
         public Form1()
@@ -47,6 +55,7 @@ namespace CarGame
             InitilizeWindow();
             RegisterEvents();
             InitializeCars();
+            InitilizePlayer();
             InitializeRoad();
         }
 
@@ -123,6 +132,19 @@ namespace CarGame
             };
 
         }
+        private void InitilizePlayer()
+        {
+            lanes = new int[]
+            {
+                90,
+                150,
+                215,
+                278
+            };
+
+            currentLane = 1;
+            playerX = lanes[currentLane];
+        }
 
         //-------------------------  UTILITY FUNCTIONS -------------------------
         private void UpdateHoveredCar(Point mousePos)
@@ -162,6 +184,28 @@ namespace CarGame
             }
         }
 
+        private void UpdatePlayerPosition()
+        {
+            int targetX = lanes[targetLane];
+
+            if (playerX < targetX)
+            {
+                playerX += laneSpeed;
+                if (playerX > targetX)
+                    playerX = targetX;
+
+            }
+            else if (playerX > targetX)
+            {
+                playerX -= laneSpeed;
+                if (playerX < targetX)
+                    playerX = targetX;
+            }
+
+            currentLane = targetLane;
+        }
+
+
         //--------------------------- EVENT HANDLERS ---------------------------
 
         private void TimerRoad_Tick(object sender, EventArgs e)
@@ -174,11 +218,20 @@ namespace CarGame
             if (roadY < 0)
                 roadY += roadHeight;
 
+            UpdatePlayerPosition();
             Invalidate();
 
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+            if (choosingCar)
+                return;
+
+            if (e.KeyCode == Keys.Left && targetLane > 0)
+                targetLane--;
+
+            if (e.KeyCode == Keys.Right && targetLane < lanes.Length - 1)
+                targetLane++;
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -236,7 +289,7 @@ namespace CarGame
 
         private void DrawPlayer(Graphics g)
         {
-            g.DrawImage(playerCar, new Rectangle(170, 400, playerWidth, playerHeight));
+            g.DrawImage(playerCar, new Rectangle(playerX, 400, playerWidth, playerHeight));
         }
 
     }
