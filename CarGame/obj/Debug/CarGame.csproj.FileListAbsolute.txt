@@ -1,0 +1,18 @@
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\bin\Debug\CarGame.exe.config
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\bin\Debug\CarGame.exe
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\bin\Debug\CarGame.pdb
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\obj\Debug\CarGame.csproj.AssemblyReference.cache
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\obj\Debug\CarGame.Properties.Resources.resources
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\obj\Debug\CarGame.csproj.GenerateResource.cache
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\obj\Debug\CarGame.csproj.CoreCompileInputs.cache
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\obj\Debug\CarGame.exe
+C:\Users\athlo\OneDrive\Desktop\CarGame\CarGame\obj\Debug\CarGame.pdb
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\bin\Debug\CarGame.exe.config
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\bin\Debug\CarGame.exe
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\bin\Debug\CarGame.pdb
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.csproj.AssemblyReference.cache
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.Properties.Resources.resources
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.csproj.GenerateResource.cache
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.csproj.CoreCompileInputs.cache
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.exe
+C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.pdb
