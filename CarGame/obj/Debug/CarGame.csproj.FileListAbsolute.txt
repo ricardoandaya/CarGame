@@ -16,3 +16,11 @@ C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.csp
 C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.csproj.CoreCompileInputs.cache
 C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.exe
 C:\Users\athlo\OneDrive\Desktop\New folder\CarGame\CarGame\obj\Debug\CarGame.pdb
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\bin\Debug\CarGame.exe.config
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\obj\Debug\CarGame.exe
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\obj\Debug\CarGame.pdb
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\bin\Debug\CarGame.exe
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\bin\Debug\CarGame.pdb
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\obj\Debug\CarGame.csprojResolveAssemblyReference.cache
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\obj\Debug\CarGame.Properties.Resources.resources
+C:\Users\LAB\Desktop\cargame\CarGame\CarGame\obj\Debug\CarGame.csproj.GenerateResource.Cache
