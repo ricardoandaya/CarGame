@@ -14,7 +14,7 @@ namespace CarGame
     public partial class Form1 : Form
     {
         private Random rnd = new Random();
-
+        private bool Collide = false;
         //ROAD
         private Timer timerRoad;
         private Image roadImage;
@@ -108,7 +108,7 @@ namespace CarGame
             InitializeCars();
             InitilizePlayer();
             InitializeEnemy();
-            RegisterEvets();
+            RegisterEvents();
         }
 
         private void InitilizeWindow()
@@ -201,7 +201,7 @@ namespace CarGame
                 enemyActive[i] = false;
         }
 
-        private void RegisterEvets()
+        private void RegisterEvents()
         {
             Paint += Form1_Paint;
             MouseClick += Form1_MouseClick;
@@ -286,7 +286,44 @@ namespace CarGame
 
             return true;
         }
+        private void CheckCollision()
+        {
+            // PlayerHitbox
+            Rectangle playerRect = new Rectangle(
+                playerX + 8,
+                (int)playerY + 8,
+                playerWidth - 16,
+                playerHeight - 16
+                );
 
+            //Enemies
+            for (int i = 0; i < MAX_ENEMIES; i++)
+            {
+                if (!enemyActive[i])
+                    continue;
+
+                Rectangle enemyRect = new Rectangle(
+                    lanes[enemyLane[i]] + 8,
+                    (int)enemyY[i] + 8,
+                    enemyWidth - 16,
+                    enemyHeight - 16
+                    );
+
+                if (playerRect.IntersectsWith(enemyRect))
+                {
+                    Collide = true;
+                    Invalidate();
+                    return;
+                }
+                else
+                {
+                    Collide = false;
+                    Invalidate();
+                    return;
+                }
+
+            }
+        }
         //----------------------------- UPDATE METHODS -------------------------
         private void UpdatePlayerPosition()
         {
@@ -417,6 +454,7 @@ namespace CarGame
             UpdateRoad();
             UpdatePlayerPosition();
             updateEnemySpeed();
+            CheckCollision();
             Invalidate();
         }
 
@@ -546,8 +584,26 @@ namespace CarGame
                 if (enemyActive[i])
                 {
                     activeEnenmies++;
+
+                    Rectangle enemyRect = new Rectangle(
+                        lanes[enemyLane[i]] + 8,
+                        (int)enemyY[i] + 8,
+                        enemyWidth - 16,
+                        enemyHeight - 16
+                        );
+
+                    g.DrawRectangle(Pens.Red, enemyRect);
                 }
             }
+            // PlayerHitbox
+            Rectangle playerRect = new Rectangle(
+                playerX + 8,
+                (int)playerY + 8,
+                playerWidth - 16,
+                playerHeight - 16
+                );
+
+            g.DrawRectangle(Pens.Lime, playerRect);
 
 
             //Draw debug info Overlay
