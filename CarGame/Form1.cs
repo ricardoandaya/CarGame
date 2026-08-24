@@ -19,6 +19,19 @@ namespace CarGame
         private int roadHeight;
         private float roadY;
 
+        // ROAD SPEED
+        private float speed = 3f;
+        private float normalSpeed = 3f;
+        private float maxSpeed = 18f;
+
+        private float acceleration = 0.08f;
+        private float deceleration = 0.05f;
+
+        private bool moveForward = false;
+        private bool isBraking = false;
+        private float brakePower = 0.15f;
+
+
         //CAR SELECTION
         private Image carSpriteSheet;
         private Image[] cars;
@@ -35,6 +48,10 @@ namespace CarGame
         private int playerHeight = 95;
         private int playerX = 0;
         private float playerY = 0;
+        private float normalPlayerY;
+        private float targetPlayerY;
+        private float playerForwardSpeed = 2f;
+
 
         // Lane System
         private int[] lanes;
@@ -42,36 +59,20 @@ namespace CarGame
         private int targetLane;
         private int laneSpeed = 8;
 
-        // ROAD SPEED
-        private float speed = 3f;
-        private float normalSpeed = 3f;
-        private float maxSpeed = 18f;
-
-        private float acceleration = 0.08f;
-        private float deceleration = 0.05f;
-
-        private bool moveForward = false;
-        private bool isBraking = false;
-        private float brakePower = 0.15f;
-        private float normalPlayerY;
-        private float targetPlayerY;
-        private float playerForwardSpeed = 2f;
-
 
         public Form1()
         {
             InitializeComponent();
             InitilizeGame();
-            
         }
 
         private void InitilizeGame()
         {
             InitilizeWindow();
-            RegisterEvents();
+            InitializeRoad();
             InitializeCars();
             InitilizePlayer();
-            InitializeRoad();
+            RegisterEvets();
         }
 
         private void InitilizeWindow()
@@ -83,6 +84,7 @@ namespace CarGame
             StartPosition = FormStartPosition.CenterScreen;
             KeyPreview = true;
         }
+
         private void InitializeRoad()
         {
             roadImage = Properties.Resources.road;
@@ -93,15 +95,6 @@ namespace CarGame
             timerRoad.Interval = 30;
             timerRoad.Tick += TimerRoad_Tick;
             timerRoad.Start();
-        }
-
-        private void RegisterEvents()
-        {
-            Paint += Form1_Paint;
-            MouseClick += Form1_MouseClick;
-            MouseMove += Form1_MouseMove;
-            KeyUp += Form1_KeyUp;
-            KeyDown += Form1_KeyDown;
         }
 
         private void InitializeCars()
@@ -147,11 +140,14 @@ namespace CarGame
             };
 
         }
+
+
         private void InitilizePlayer()
         {
             normalPlayerY = ClientSize.Height - 120;
             playerY = normalPlayerY;
             targetPlayerY = playerY;
+
             lanes = new int[]
             {
                 90,
@@ -161,7 +157,17 @@ namespace CarGame
             };
 
             currentLane = 1;
+            targetLane = currentLane;
             playerX = lanes[currentLane];
+        }
+
+        private void RegisterEvets()
+        {
+            Paint += Form1_Paint;
+            MouseClick += Form1_MouseClick;
+            MouseMove += Form1_MouseMove;
+            KeyUp += Form1_KeyUp;
+            KeyDown += Form1_KeyDown;
         }
 
         //-------------------------  UTILITY FUNCTIONS -------------------------
@@ -202,7 +208,7 @@ namespace CarGame
             }
         }
 
-        private void UpdatePlayerPosition() 
+        private void UpdatePlayerPosition()
         {
             int targetX = lanes[targetLane];
 
@@ -222,17 +228,19 @@ namespace CarGame
 
             currentLane = targetLane;
 
+            // Update playerY based on acceleration and braking
             if (moveForward)
                 targetPlayerY = normalPlayerY - 35;
             else
                 targetPlayerY = normalPlayerY;
 
             if (playerY < targetPlayerY)
-            {
-                playerY += playerForwardSpeed;
-                if (playerY > targetPlayerY)
-                    playerY = targetPlayerY;
-            }
+                {
+                    playerY += playerForwardSpeed;
+                    if (playerY > targetPlayerY)
+                        playerY = targetPlayerY;
+                }
+
 
             if (playerY > targetPlayerY)
             {
@@ -270,6 +278,7 @@ namespace CarGame
                 if (speed < 0)
                     speed = 0;
             }
+
             //Coast
             else
             {
@@ -292,19 +301,18 @@ namespace CarGame
                 }
 
             }
-
-
         }
-        //--------------------------- EVENT HANDLERS ---------------------------
 
+
+        //--------------------------- EVENT HANDLERS ---------------------------
         private void TimerRoad_Tick(object sender, EventArgs e)
         {
             UpdateSpeed();
             UpdateRoad();
             UpdatePlayerPosition();
             Invalidate();
-
         }
+
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (choosingCar)
@@ -346,11 +354,13 @@ namespace CarGame
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             DrawRoad(e.Graphics);
+
             if (choosingCar)
                 DrawCarSelection(e.Graphics);
             else
                 DrawPlayer(e.Graphics);
         }
+
 
         //--------------------------- DRAWING METHODS ---------------------------
         private void DrawRoad(Graphics g)
@@ -359,6 +369,7 @@ namespace CarGame
             g.DrawImage(roadImage, 0, y, roadWidth, roadHeight);
             g.DrawImage(roadImage, 0, y - roadHeight, roadWidth, roadHeight);
         }
+
         private void DrawCarSelection(Graphics g)
         {
             using (Brush overlay = new SolidBrush(Color.FromArgb(128, 0, 0, 0)))
@@ -385,7 +396,17 @@ namespace CarGame
 
         private void DrawPlayer(Graphics g)
         {
-            g.DrawImage(playerCar, new Rectangle(playerX, 400, playerWidth, playerHeight));
+            g.DrawImage(playerCar, playerX, (int)playerY, playerWidth, playerHeight);
+
+            if (isBraking)
+            {
+                using (Brush brush = new SolidBrush(Color.Red))
+                {
+                    g.FillEllipse(brush, playerX + 10, playerY + playerHeight - 10, 8, 8);
+                    g.FillEllipse(brush, playerX + playerWidth - 18, playerY + playerHeight - 10, 8, 8);
+                }
+
+            }
         }
 
     }
