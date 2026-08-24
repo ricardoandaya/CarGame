@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
-using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -254,7 +254,23 @@ namespace CarGame
 
         private void SpawnEnemy()
         {
-            SpawnInLane(rnd.Next(4), -enemyHeight);
+            int[] pattern;
+            int km = (int)(totalDistanceMeters / 1000);
+
+            if (km <= 1)
+                SpawnInLane(rnd.Next(4), -enemyHeight);
+            else if (km < 3)
+            {
+                pattern = trafficPatterns[rnd.Next(8)];
+                foreach (int lane in pattern)
+                    SpawnInLane(lane, -enemyHeight);
+            }
+            else
+            {
+                pattern = trafficPatterns[trafficPatterns.Length];
+                foreach (int lane in pattern)
+                    SpawnInLane(lane, -enemyHeight);
+            }
         }
 
         private void SpawnInLane(int lane, float y)
@@ -548,7 +564,7 @@ namespace CarGame
             if (gameOver)
                 DrawGameOver(e.Graphics);
 
-            DrawDebugInfo(e.Graphics);
+            //DrawDebugInfo(e.Graphics);
         }
 
 
@@ -692,6 +708,7 @@ namespace CarGame
                     280);
             }
         }
+
         private void DrawHUD(Graphics g)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -788,5 +805,7 @@ namespace CarGame
 
             path.Dispose();
         }
+
+
     }
 }
