@@ -15,6 +15,8 @@ namespace CarGame
     {
         private Random rnd = new Random();
         private bool Collide = false;
+        private bool gameOver = false;
+
         //ROAD
         private Timer timerRoad;
         private Image roadImage;
@@ -108,7 +110,7 @@ namespace CarGame
             InitializeCars();
             InitilizePlayer();
             InitializeEnemy();
-            RegisterEvents();
+            RegisterEvets();
         }
 
         private void InitilizeWindow()
@@ -201,7 +203,7 @@ namespace CarGame
                 enemyActive[i] = false;
         }
 
-        private void RegisterEvents()
+        private void RegisterEvets()
         {
             Paint += Form1_Paint;
             MouseClick += Form1_MouseClick;
@@ -270,6 +272,7 @@ namespace CarGame
                 }
             }
         }
+
         private bool CanSpawnInLane(int lane)
         {
             const int minGap = 220;
@@ -286,6 +289,7 @@ namespace CarGame
 
             return true;
         }
+
         private void CheckCollision()
         {
             // PlayerHitbox
@@ -311,6 +315,7 @@ namespace CarGame
 
                 if (playerRect.IntersectsWith(enemyRect))
                 {
+                    gameOver = true;
                     Collide = true;
                     Invalidate();
                     return;
@@ -324,6 +329,24 @@ namespace CarGame
 
             }
         }
+
+        private void RestartGame()
+        {
+            gameOver = false;
+            roadY = 0;
+            speed = normalSpeed;
+            totalDistanceMeters = 0f;
+
+            playerX = lanes[1];
+            targetLane = 1;
+            currentLane = 1;
+
+            for (int i = 0; i < MAX_ENEMIES; i++)
+                enemyActive[i] = false;
+
+            timerRoad.Start();
+        }
+
         //----------------------------- UPDATE METHODS -------------------------
         private void UpdatePlayerPosition()
         {
@@ -450,6 +473,9 @@ namespace CarGame
         //--------------------------- EVENT HANDLERS ---------------------------
         private void TimerRoad_Tick(object sender, EventArgs e)
         {
+            if (gameOver)
+                return;
+
             UpdateSpeed();
             UpdateRoad();
             UpdatePlayerPosition();
@@ -460,6 +486,14 @@ namespace CarGame
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
+            if (gameOver)
+            {
+                if ((e.KeyCode == Keys.Escape) ||
+                    (e.KeyCode == Keys.R) || (e.KeyCode == Keys.Enter))
+                    RestartGame();
+                return;
+            }
+
             if (choosingCar)
                 return;
 
@@ -506,6 +540,8 @@ namespace CarGame
             else
                 DrawPlayer(e.Graphics);
 
+            if (gameOver)
+                DrawGameOver(e.Graphics);
 
             DrawDebugInfo(e.Graphics);
         }
@@ -554,7 +590,6 @@ namespace CarGame
                     g.FillEllipse(brush, playerX + 10, playerY + playerHeight - 10, 8, 8);
                     g.FillEllipse(brush, playerX + playerWidth - 18, playerY + playerHeight - 10, 8, 8);
                 }
-
             }
         }
 
@@ -595,6 +630,7 @@ namespace CarGame
                     g.DrawRectangle(Pens.Red, enemyRect);
                 }
             }
+
             // PlayerHitbox
             Rectangle playerRect = new Rectangle(
                 playerX + 8,
@@ -605,7 +641,6 @@ namespace CarGame
 
             g.DrawRectangle(Pens.Lime, playerRect);
 
-
             //Draw debug info Overlay
             using (Brush overlay = new SolidBrush(Color.FromArgb(160, 0, 0, 0)))
                 g.FillRectangle(overlay, new Rectangle(5, ClientSize.Height - 105, 150, 100));
@@ -615,11 +650,43 @@ namespace CarGame
             {
                 string debugtext = $"Speed: {speed:f2}\n" +
                                    $"Distance: {totalDistanceMeters:f2} m\n" +
+                                   $"Collided: {Collide}\n" +
                                    $"Player Lane: {currentLane}\n" +
                                    $"Target Lane: {targetLane}\n" +
                                    $"Enemy Active: {activeEnenmies}";
                 g.DrawString(debugtext, font, Brushes.Yellow, 0, ClientSize.Height - 100);
             }
         }
+
+        private void DrawGameOver(Graphics g)
+        {
+            using (Brush overlay = new SolidBrush(Color.FromArgb(180, 0, 0, 0)))
+                g.FillRectangle(overlay, ClientRectangle);
+
+            using (Font title = new Font("Arial", 28, FontStyle.Bold))
+            using (Font subtitle = new Font("Arial", 14, FontStyle.Regular))
+            {
+                string gameOverText = "GAME OVER";
+                string retryText = "Press R to Restart";
+
+                SizeF titleSize = g.MeasureString(gameOverText, title);
+                SizeF retrySize = g.MeasureString(retryText, subtitle);
+
+                g.DrawString(
+                    gameOverText,
+                    title,
+                    Brushes.Red,
+                    (ClientSize.Width - titleSize.Width) / 2,
+                    220);
+
+                g.DrawString(
+                    retryText,
+                    subtitle,
+                    Brushes.White,
+                    (ClientSize.Width - retrySize.Width) / 2,
+                    280);
+            }
+        }
+
     }
 }
