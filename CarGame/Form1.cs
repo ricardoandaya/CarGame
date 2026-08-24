@@ -255,6 +255,9 @@ namespace CarGame
 
         private void SpawnInLane(int lane, float y)
         {
+            if (!CanSpawnInLane(lane))
+                return;
+
             for (int i = 0; i < MAX_ENEMIES; i++)
             {
                 if (!enemyActive[i])
@@ -267,7 +270,22 @@ namespace CarGame
                 }
             }
         }
+        private bool CanSpawnInLane(int lane)
+        {
+            const int minGap = 220;
 
+            for (int i = 0; i < MAX_ENEMIES; i++)
+            {
+                if (!enemyActive[i])
+                    continue;
+                if (enemyLane[i] != lane)
+                    continue;
+                if (enemyY[i] < minGap)
+                    return false;
+            }
+
+            return true;
+        }
 
         //----------------------------- UPDATE METHODS -------------------------
         private void UpdatePlayerPosition()
