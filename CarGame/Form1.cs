@@ -540,6 +540,9 @@ namespace CarGame
             else
                 DrawPlayer(e.Graphics);
 
+            if (!choosingCar)
+                DrawHUD(e.Graphics);
+
             if (gameOver)
                 DrawGameOver(e.Graphics);
 
@@ -687,6 +690,101 @@ namespace CarGame
                     280);
             }
         }
+        private void DrawHUD(Graphics g)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
 
+            //SPEED
+            DrawHudPanel(g, new Rectangle(10, 10, 120, 55));
+
+            using (Font big = new Font("Segoe UI", 22, FontStyle.Bold))
+            using (Font small = new Font("Segoe UI", 10))
+            {
+                g.DrawString(
+                    $"{speed * 10:0}",
+                    big,
+                    Brushes.White,
+                    18,
+                    10);
+
+                g.DrawString(
+                    "km/h",
+                    small,
+                    Brushes.Gainsboro,
+                    74,
+                    36);
+            }
+
+            // Distance
+            DrawHudPanel(g, new Rectangle(ClientSize.Width - 120, 10, 110, 45));
+
+            float km = totalDistanceMeters / 1000f;
+
+            string distance =
+                km < 1
+                ? $"{(int)totalDistanceMeters} m"
+                : $"{km:F2} km";
+
+            using (Font value = new Font("Segoe UI", 16, FontStyle.Bold))
+            {
+                SizeF size = g.MeasureString(distance, value);
+
+                g.DrawString(
+                    distance,
+                    value,
+                    Brushes.White,
+                    ClientSize.Width - size.Width - 18,
+                    18);
+            }
+
+            // Score
+            score = (int)(totalDistanceMeters * speed);
+            DrawHudPanel(g, new Rectangle(ClientSize.Width - 110, 70, 100, 55));
+
+            using (Font scoreFontlabel = new Font("Segoe UI", 10, FontStyle.Bold))
+            using (Font scoreFont = new Font("Segoe UI", 14, FontStyle.Bold))
+            {
+                g.DrawString(
+                    score.ToString(),
+                    scoreFont,
+                    Brushes.Gold,
+                    ClientSize.Width - 90,
+                    90);
+
+                g.DrawString(
+                    "Score",
+                    scoreFontlabel,
+                    Brushes.Gainsboro,
+                    ClientSize.Width - 100,
+                    70);
+            }
+
+
+
+        }
+
+        private void DrawHudPanel(Graphics g, Rectangle rect)
+        {
+            GraphicsPath path = new GraphicsPath();
+
+            int r = 10;
+
+            path.AddArc(rect.Left, rect.Top, r, r, 180, 90);
+            path.AddArc(rect.Right - r, rect.Top, r, r, 270, 90);
+            path.AddArc(rect.Right - r, rect.Bottom - r, r, r, 0, 90);
+            path.AddArc(rect.Left, rect.Bottom - r, r, r, 90, 90);
+
+            path.CloseFigure();
+
+            using (SolidBrush b =
+                new SolidBrush(Color.FromArgb(160, 25, 25, 25)))
+                g.FillPath(b, path);
+
+            using (Pen p =
+                new Pen(Color.FromArgb(70, Color.White)))
+                g.DrawPath(p, path);
+
+            path.Dispose();
+        }
     }
 }
