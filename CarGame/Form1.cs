@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -59,6 +60,9 @@ namespace CarGame
         private int targetLane;
         private int laneSpeed = 8;
 
+        //Distance
+        private float totalDistanceMeters = 0f;
+        private float pixelperMeter = 12f;
 
         public Form1()
         {
@@ -77,7 +81,7 @@ namespace CarGame
 
         private void InitilizeWindow()
         {
-            ClientSize = new Size(420, 640);
+            ClientSize = new Size(420, 540);
             DoubleBuffered = true;
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
@@ -141,7 +145,6 @@ namespace CarGame
 
         }
 
-
         private void InitilizePlayer()
         {
             normalPlayerY = ClientSize.Height - 120;
@@ -157,7 +160,6 @@ namespace CarGame
             };
 
             currentLane = 1;
-            targetLane = currentLane;
             playerX = lanes[currentLane];
         }
 
@@ -235,12 +237,11 @@ namespace CarGame
                 targetPlayerY = normalPlayerY;
 
             if (playerY < targetPlayerY)
-                {
-                    playerY += playerForwardSpeed;
-                    if (playerY > targetPlayerY)
-                        playerY = targetPlayerY;
-                }
-
+            {
+                playerY += playerForwardSpeed;
+                if (playerY > targetPlayerY)
+                    playerY = targetPlayerY;
+            }
 
             if (playerY > targetPlayerY)
             {
@@ -253,6 +254,9 @@ namespace CarGame
         private void UpdateRoad()
         {
             roadY += speed;
+
+            if (!choosingCar)
+                totalDistanceMeters += speed / pixelperMeter;
 
             if (roadY >= roadHeight)
                 roadY -= roadHeight;
@@ -359,6 +363,9 @@ namespace CarGame
                 DrawCarSelection(e.Graphics);
             else
                 DrawPlayer(e.Graphics);
+
+
+            DrawDebugInfo(e.Graphics);
         }
 
 
@@ -409,5 +416,22 @@ namespace CarGame
             }
         }
 
+
+        private void DrawDebugInfo(Graphics g)
+        {
+            //Draw debug info Overlay
+            using (Brush overlay = new SolidBrush(Color.FromArgb(160, 0, 0, 0)))
+                g.FillRectangle(overlay, new Rectangle(5, ClientSize.Height - 105, 150, 100));
+
+            // Draw debug info
+            using (Font font = new Font("Arial", 10, FontStyle.Regular))
+            {
+                string debugtext = $"Speed: {speed:f2}\n" +
+                                   $"Distance: {totalDistanceMeters:f2} m\n" +
+                                   $"Player Lane: {currentLane}\n" +
+                                   $"Target Lane: {targetLane}";
+                g.DrawString(debugtext, font, Brushes.Yellow, 0, ClientSize.Height - 100);
+            }
+        }
     }
 }
